@@ -30,8 +30,7 @@ h1{font-size:30px;font-weight:800;line-height:1.2;margin:2px 0 8px}
 .lead{color:var(--ink2);margin:0 0 18px}
 form{display:flex;gap:8px;flex-wrap:wrap}
 .field{display:flex;align-items:stretch;flex:1 1 220px;border:2px solid var(--ink);border-radius:12px;overflow:hidden;background:var(--card)}
-.field span{display:flex;align-items:center;padding:0 4px 0 14px;font-size:22px;font-weight:800;color:var(--ink2)}
-.field input{flex:1;min-width:0;border:0;outline:0;background:transparent;color:var(--ink);font:inherit;font-size:22px;font-weight:800;letter-spacing:.12em;padding:10px 12px 10px 2px;text-transform:uppercase}
+.field input{flex:1;min-width:0;border:0;outline:0;background:transparent;color:var(--ink);font:inherit;font-size:22px;font-weight:800;letter-spacing:.08em;padding:10px 14px;text-transform:uppercase}
 .field:focus-within{box-shadow:0 0 0 3px color-mix(in srgb,var(--blue) 35%,transparent)}
 button{font:inherit;font-weight:700;font-size:18px;border:0;border-radius:12px;padding:12px 22px;background:var(--ink);color:var(--bg);cursor:pointer}
 button:disabled{opacity:.55;cursor:wait}
@@ -91,8 +90,7 @@ footer{font-size:14px;color:var(--muted);margin-top:26px;border-top:1px solid va
 
   <form id="f" autocomplete="off">
     <label class="field" for="code">
-      <span aria-hidden="true">S-</span>
-      <input id="code" name="code" inputmode="text" autocapitalize="characters" spellcheck="false" maxlength="8" placeholder="XXXX" aria-label="Code ของคุณ (4 ตัวหลัง S-)">
+      <input id="code" name="code" inputmode="text" autocapitalize="characters" spellcheck="false" maxlength="40" placeholder="S-XXXX" aria-label="Code ของคุณ เช่น S-XXXX">
     </label>
     <button id="go" type="submit">ดูคะแนน</button>
   </form>
@@ -122,7 +120,10 @@ footer{font-size:14px;color:var(--muted);margin-top:26px;border-top:1px solid va
   const hex = (buf) => [...new Uint8Array(buf)].map((b) => b.toString(16).padStart(2, "0")).join("");
 
   function normalise(raw) {
-    let s = (raw || "").toUpperCase().replace(/[\s\-–_.]/g, "");
+    const up = (raw || "").toUpperCase();
+    // A pasted line such as "Code: S-AB2C" still works: take the S-XXXX inside it.
+    const m = up.match(/(?:^|[^A-Z0-9])S\s*[-–]\s*([A-Z0-9]{4})(?![A-Z0-9])/);
+    let s = m ? m[1] : up.replace(/[\s\-–_.]/g, "");
     if (s.length === 5 && s[0] === "S") s = s.slice(1);
     if (s.length !== 4) return { err: "Code มี 4 ตัวหลัง S- เช่น S-XXXX ลองตรวจอีกครั้งนะคะ" };
     if (/[O0I1]/.test(s)) return { err: "Code ไม่มีตัว O, 0, I หรือ 1 ค่ะ ลองเทียบกับข้อความที่ได้รับอีกครั้ง" };
@@ -269,7 +270,7 @@ footer{font-size:14px;color:var(--muted);margin-top:26px;border-top:1px solid va
     e.preventDefault();
     const n = normalise($("#code").value);
     if (n.err) { msg(n.err); $("#result").innerHTML = ""; return; }
-    $("#code").value = n.code.slice(2);
+    $("#code").value = n.code;
     if (!(window.crypto && crypto.subtle)) { msg("เบราว์เซอร์นี้เปิดคะแนนไม่ได้ ลองเปิดลิงก์ใน Chrome หรือ Safari ค่ะ"); return; }
     msg("กำลังเปิดคะแนน…"); $("#go").disabled = true;
     try {
