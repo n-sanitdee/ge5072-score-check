@@ -167,8 +167,9 @@ footer{font-size:14px;color:var(--muted);margin-top:26px;border-top:1px solid va
   ];
   // Until the presentation marks are entered, the Final Projects column holds the report only (out of 8).
   const itemsFor = (data) => !data.fpSplit ? ITEMS : ITEMS.flatMap((it) => it.k !== "fp" ? [it] : [
-    { ...it, name: "Final Project · Report", en: "รายงาน (เต็ม 8)", max: 8 },
-    { k: "fpPres", name: "Final Project · Presentation", en: "การนำเสนอ (เต็ม 2)", max: 2, c: "var(--green)", pending: true },
+    { ...it, name: "Final Project · Report", en: "รายงาน (เต็ม 8) · ยังไม่รวม Presentation 2 คะแนน", max: 8 },
+    { k: "fpPres", name: "Final Project · Presentation", en: "การนำเสนอ 2 คะแนน ยังไม่รวมในคะแนนตอนนี้ · จะเพิ่มให้เร็ว ๆ นี้ค่ะ", max: 2, c: "var(--green)", pending: true,
+      tag: '<span class="tag wait">เร็ว ๆ นี้</span>' },
   ]);
 
   function render(data, code, rec) {
@@ -179,6 +180,7 @@ footer{font-size:14px;color:var(--muted);margin-top:26px;border-top:1px solid va
       let val, tag = "", pct = 0;
       if (pending.has(it.k) || it.pending) {
         val = `<span class="pending">รอบันทึก</span> <small>/ ${it.max}</small>`;
+        tag = it.tag || "";
         waiting.push(it.name);
       } else if (isNum(v)) {
         base += v; pct = v / it.max;
