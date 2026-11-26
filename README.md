@@ -30,3 +30,11 @@ Bonus Part A/B, and the topped-up total (max 45), using the method announced in 
 
 A column that nobody has a non-zero mark in yet (Course Evaluation, Part B, today) shows as
 "รอบันทึก" instead of 0, and is left out of the total until it is entered.
+
+Final Project: while `FP_PRESENTATION_PENDING = True` in `build_scores.py`, the page shows the
+Final Projects column as Report /8 plus Presentation "รอบันทึก" /2. Once the presentation points are
+in the tracker (column holds the full /10), set it to False and rebuild; the build stops with a
+reminder if it sees a mark above 8 while the flag is still True.
+
+The "อัปเดตล่าสุด" time on the page is when the pseudonymised extract was last regenerated with
+changed scores.

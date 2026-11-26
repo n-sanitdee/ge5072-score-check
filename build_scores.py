@@ -49,6 +49,11 @@ COLUMNS = {
     "partA": "Bonus Points (Part A)",
     "partB": "Bonus Points (Part B: 75)",
 }
+# Final Projects (10%) = report /8 + presentation /2. Until the presentation marks are
+# in the tracker, the column holds the report only: the page then shows Report x/8 and
+# Presentation "รอบันทึก" /2. Set to False once the column holds the full /10.
+FP_PRESENTATION_PENDING = True
+
 # Part A catalogue as announced in Teams on 26 Nov 2026: 65 points in all.
 EXERCISES = {f"Ex {i}": (15 if i == 3 else 5) for i in range(1, 12)}
 PART_A_TOTAL = 65
@@ -112,6 +117,10 @@ def main():
         records[code] = rec
     if DEMO_CODE in records:
         sys.exit("A real student holds S-TEST; pick another demo code.")
+    over8 = [c for c, rec in records.items() if isinstance(rec["fp"], (int, float)) and rec["fp"] > 8]
+    if FP_PRESENTATION_PENDING and over8:
+        sys.exit(f"{len(over8)} Final Project mark(s) are above 8, so presentation points look entered. "
+                 "Set FP_PRESENTATION_PENDING = False in build_scores.py, then rebuild.")
 
     # A column nobody has a non-zero mark in has not been entered yet (e.g. the
     # course evaluation, pasted at the end of semester): show it as pending, not 0.
@@ -121,7 +130,7 @@ def main():
 
     # Every build uses a fresh salt, so the file always changes. Skip the rebuild
     # when the scores themselves are unchanged (hash kept locally, not published).
-    digest = hashlib.sha256(json.dumps([records, pending], sort_keys=True).encode()).hexdigest()
+    digest = hashlib.sha256(json.dumps([records, pending, FP_PRESENTATION_PENDING], sort_keys=True).encode()).hexdigest()
     stamp = HERE / ".last_data_hash"
     if OUT.exists() and stamp.exists() and stamp.read_text().strip() == digest:
         print("Scores unchanged since the last build; nothing to do.")
@@ -137,7 +146,7 @@ def main():
 
     updated = dt.datetime.fromtimestamp(src_mtime).strftime("%Y-%m-%dT%H:%M")
     doc = {"v": 1, "updated": updated, "iter": ITERATIONS,
-           "salt": base64.b64encode(salt).decode(), "pending": pending,
+           "salt": base64.b64encode(salt).decode(), "pending": pending, "fpSplit": FP_PRESENTATION_PENDING,
            "exercises": EXERCISES, "partATotal": PART_A_TOTAL,
            "records": dict(sorted(out.items()))}
     OUT.write_text(json.dumps(doc, separators=(",", ":")) + "\n")

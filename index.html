@@ -36,6 +36,7 @@ form{display:flex;gap:8px;flex-wrap:wrap}
 button{font:inherit;font-weight:700;font-size:18px;border:0;border-radius:12px;padding:12px 22px;background:var(--ink);color:var(--bg);cursor:pointer}
 button:disabled{opacity:.55;cursor:wait}
 .hint{font-size:14px;color:var(--muted);margin:10px 0 0}
+.updated{display:inline-block;font-size:14px;font-weight:700;color:var(--ink2);background:var(--panel);border-radius:999px;padding:4px 12px;margin:12px 0 0}
 .msg{margin:16px 0 0;padding:12px 14px;border-radius:10px;background:var(--panel);border-left:5px solid var(--orange)}
 .msg:empty{display:none}
 #result{margin-top:22px}
@@ -95,6 +96,7 @@ footer{font-size:14px;color:var(--muted);margin-top:26px;border-top:1px solid va
     </label>
     <button id="go" type="submit">ดูคะแนน</button>
   </form>
+  <p class="updated" id="updated" hidden></p>
   <p class="hint">🔒 Code ใช้ถอดรหัสคะแนนในเครื่องของคุณเท่านั้น ไม่ได้ส่งไปที่ไหน · Code เป็นของคุณคนเดียว อย่าบอกต่อนะคะ</p>
   <p class="msg" id="msg" role="status" aria-live="polite"></p>
 
@@ -162,14 +164,19 @@ footer{font-size:14px;color:var(--muted);margin-top:26px;border-top:1px solid va
     { k: "quiz",  name: "Pop Quiz", en: "", max: 5, c: "var(--amber)" },
     { k: "busuu", name: "Busuu", en: "", max: 10, c: "var(--pink)" },
   ];
+  // Until the presentation marks are entered, the Final Projects column holds the report only (out of 8).
+  const itemsFor = (data) => !data.fpSplit ? ITEMS : ITEMS.flatMap((it) => it.k !== "fp" ? [it] : [
+    { ...it, name: "Final Project · Report", en: "รายงาน (เต็ม 8)", max: 8 },
+    { k: "fpPres", name: "Final Project · Presentation", en: "การนำเสนอ (เต็ม 2)", max: 2, c: "var(--green)", pending: true },
+  ]);
 
   function render(data, code, rec) {
     const pending = new Set(data.pending || []);
     let base = 0, waiting = [];
-    const rows = ITEMS.map((it) => {
+    const rows = itemsFor(data).map((it) => {
       const v = rec[it.k];
       let val, tag = "", pct = 0;
-      if (pending.has(it.k)) {
+      if (pending.has(it.k) || it.pending) {
         val = `<span class="pending">รอบันทึก</span> <small>/ ${it.max}</small>`;
         waiting.push(it.name);
       } else if (isNum(v)) {
@@ -217,7 +224,7 @@ footer{font-size:14px;color:var(--muted);margin-top:26px;border-top:1px solid va
       ${rec.demo ? '<div class="demo">ตัวอย่าง (Code ทดสอบ) — ไม่ใช่คะแนนจริงของใคร</div>' : ""}
       <div class="head">
         <div class="who">${esc(code)} <small>· Section ${esc(rec.g)}</small></div>
-        <div class="stamp">คะแนน ณ ${esc(thaiDate(data.updated))}</div>
+        <div class="stamp">อัปเดตล่าสุด ${esc(thaiDate(data.updated))}</div>
       </div>
 
       <div class="hero">
@@ -275,6 +282,12 @@ footer{font-size:14px;color:var(--muted);margin-top:26px;border-top:1px solid va
       msg("โหลดข้อมูลไม่สำเร็จ ลองรีเฟรชหน้าแล้วกดอีกครั้งค่ะ");
     } finally { $("#go").disabled = false; }
   });
+
+  loadData().then((d) => {
+    const el = $("#updated");
+    el.textContent = "🕒 อัปเดตล่าสุด " + thaiDate(d.updated);
+    el.hidden = false;
+  }).catch(() => {});
 
   // Test hook: GE5072Score.lookup("S-XXXX")
   window.GE5072Score = { lookup: async (c) => { const d = await loadData(); return openRecord(d, normalise(c).code); }, normalise };
