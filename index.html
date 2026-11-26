@@ -4,105 +4,112 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex, nofollow">
+<meta name="color-scheme" content="light">
 <title>GE5072 Score Check</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
 :root{
-  --ink:#0b0b0b; --ink2:#52514e; --muted:#8a8984; --line:#e6e5e0; --bg:#ffffff; --panel:#f7f7f4; --card:#ffffff;
-  --blue:#2a78d6; --orange:#eb6834; --green:#1baf7a; --amber:#eda100; --pink:#e87ba4; --red:#d64545;
-  --track:#ecebe6;
-}
-@media (prefers-color-scheme: dark){
-  :root{
-    --ink:#f2f1ec; --ink2:#c2c0b8; --muted:#8f8d86; --line:#34332f; --bg:#151514; --panel:#1f1f1d; --card:#262624;
-    --track:#3a3935;
-  }
+  color-scheme: light;
+  --bg:#f4f6fb; --card:#ffffff; --line:#e3e7f0; --ink:#0f172a; --ink2:#475569; --muted:#8a94a6;
+  --blue:#2563eb; --cyan:#0891b2; --orange:#ea580c; --green:#059669; --amber:#d97706; --pink:#db2777; --violet:#7c3aed;
+  --ok:#059669; --no:#dc2626; --wait:#b45309;
 }
 *{box-sizing:border-box}
 html,body{margin:0;background:var(--bg);color:var(--ink)}
-body{font-family:Sarabun,Thonburi,"Leelawadee UI",sans-serif;font-size:17px;line-height:1.5;-webkit-text-size-adjust:100%}
-.stripe{display:flex;height:8px}.stripe i{flex:1}
-main{max-width:640px;margin:0 auto;padding:22px 16px 40px}
-.kicker{font-size:15px;color:var(--ink2);margin:0}
-h1{font-size:30px;font-weight:800;line-height:1.2;margin:2px 0 8px}
-.lead{color:var(--ink2);margin:0 0 18px}
-form{display:flex;gap:8px;flex-wrap:wrap}
-.field{display:flex;align-items:stretch;flex:1 1 220px;border:2px solid var(--ink);border-radius:12px;overflow:hidden;background:var(--card)}
-.field input{flex:1;min-width:0;border:0;outline:0;background:transparent;color:var(--ink);font:inherit;font-size:22px;font-weight:800;letter-spacing:.08em;padding:10px 14px;text-transform:uppercase}
-.field:focus-within{box-shadow:0 0 0 3px color-mix(in srgb,var(--blue) 35%,transparent)}
-button{font:inherit;font-weight:700;font-size:18px;border:0;border-radius:12px;padding:12px 22px;background:var(--ink);color:var(--bg);cursor:pointer}
-button:disabled{opacity:.55;cursor:wait}
-.hint{font-size:14px;color:var(--muted);margin:10px 0 0}
-.updated{display:inline-block;font-size:14px;font-weight:700;color:var(--ink2);background:var(--panel);border-radius:999px;padding:4px 12px;margin:12px 0 0}
-.msg{margin:16px 0 0;padding:12px 14px;border-radius:10px;background:var(--panel);border-left:5px solid var(--orange)}
+body{font-family:Sarabun,Thonburi,"Leelawadee UI",sans-serif;font-size:15px;line-height:1.4;-webkit-text-size-adjust:100%}
+.strip{height:5px;background:linear-gradient(90deg,var(--blue),var(--violet),var(--pink),var(--orange),var(--amber),var(--green))}
+main{max-width:1080px;margin:0 auto;padding:14px 16px 16px}
+.layout{display:grid;gap:12px}
+@media (min-width:900px){
+  main{padding:22px 24px}
+  .layout.has-result{grid-template-columns:minmax(0,5fr) minmax(0,7fr);align-items:start;column-gap:20px}
+}
+.kicker{font-size:13px;font-weight:600;color:var(--ink2);margin:0;letter-spacing:.01em}
+h1{font-size:25px;font-weight:800;line-height:1.15;margin:1px 0 9px;letter-spacing:-.01em}
+h1 span{color:var(--blue);font-weight:700}
+form{display:flex;gap:8px}
+#code{flex:1;min-width:0;font:inherit;font-size:20px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--ink);
+  background:var(--card);border:1.5px solid #cdd4e2;border-radius:12px;padding:9px 14px;outline:0}
+#code::placeholder{text-transform:none;letter-spacing:0;font-weight:500;color:var(--muted);font-size:16px}
+#code:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(37,99,235,.15)}
+button{font:inherit;font-weight:700;font-size:16px;border:0;border-radius:12px;padding:0 20px;color:#fff;cursor:pointer;
+  background:linear-gradient(135deg,var(--blue),var(--violet))}
+button:disabled{opacity:.6;cursor:wait}
+.meta{display:flex;flex-wrap:wrap;gap:4px 12px;margin-top:8px;font-size:13px;color:var(--ink2)}
+.meta .upd{font-weight:600}
+.hint{font-size:12.5px;color:var(--muted);margin:6px 0 0}
+.has-result .hint,.has-result .meta{display:none}
+.msg{margin:10px 0 0;padding:9px 12px;border-radius:10px;background:#fff7ed;border:1px solid #fed7aa;color:#9a3412;font-size:14px}
 .msg:empty{display:none}
-#result{margin-top:22px}
-.head{display:flex;justify-content:space-between;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:12px}
-.who{font-size:20px;font-weight:800}
-.who small{font-weight:600;color:var(--ink2);font-size:16px}
-.stamp{font-size:14px;color:var(--muted)}
-.hero{background:var(--panel);border-radius:14px;padding:16px 16px 14px;border-top:6px solid var(--blue);margin-bottom:18px}
-.hero .lbl{font-size:16px;font-weight:700;color:var(--ink2)}
-.hero .big{font-size:44px;font-weight:800;line-height:1.1;margin:4px 0 8px}
-.hero .big small{font-size:22px;color:var(--ink2);font-weight:700}
-.hero .eq{font-size:15px;color:var(--ink2);margin-top:8px}
-.bar{height:12px;border-radius:6px;background:var(--track);overflow:hidden;display:flex}
+
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px}
+.sum{margin-top:12px;padding:12px 14px;background:linear-gradient(135deg,#eef4ff 0%,#f4efff 100%);border-color:#d9e2fb}
+.sum-top{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
+.who{font-weight:800;font-size:16px}
+.stamp{font-size:11.5px;color:var(--ink2);font-weight:600}
+.who small{font-weight:600;color:var(--ink2);font-size:14px}
+.demo{font-size:12px;font-weight:700;color:#7c2d12;background:#fde68a;border-radius:999px;padding:2px 9px}
+.bigrow{display:flex;align-items:flex-end;justify-content:space-between;gap:10px;margin-top:4px}
+.lbl{font-size:12.5px;font-weight:600;color:var(--ink2);text-align:right;line-height:1.25;padding-bottom:4px}
+.big{font-size:40px;font-weight:800;line-height:1.05;color:#1e3a8a;font-variant-numeric:tabular-nums}
+.big small{font-size:18px;color:var(--ink2);font-weight:700}
+.bar{height:10px;border-radius:5px;background:#dfe5f3;overflow:hidden;display:flex;margin:6px 0 6px}
 .bar i{display:block;height:100%}
-section{margin-bottom:20px}
-h2{font-size:20px;font-weight:800;margin:0 0 8px;display:flex;align-items:center;gap:10px}
-h2 .n{display:inline-flex;width:28px;height:28px;border-radius:50%;background:var(--ink);color:var(--bg);font-size:15px;align-items:center;justify-content:center;flex:none}
-.list{background:var(--card);border:1px solid var(--line);border-radius:12px;overflow:hidden}
-.row{display:grid;grid-template-columns:1fr auto;gap:2px 12px;padding:10px 14px;border-bottom:1px solid var(--line);align-items:center}
-.row:last-child{border-bottom:0}
-.row .name{font-weight:600}
-.row .name small{display:block;font-weight:400;color:var(--muted);font-size:14px;line-height:1.3}
-.row .val{font-weight:800;white-space:nowrap;text-align:right}
-.row .val small{color:var(--muted);font-weight:600}
-.row .mini{grid-column:1 / -1;height:6px;border-radius:3px;background:var(--track);overflow:hidden}
-.row .mini i{display:block;height:100%;background:var(--c,var(--blue))}
-.row.sum{background:var(--panel)}
-.row.sum .name{font-weight:800}
-.tag{display:inline-block;font-size:13px;font-weight:700;border-radius:999px;padding:1px 9px;margin-left:6px;vertical-align:1px}
-.tag.ok{background:color-mix(in srgb,var(--green) 18%,transparent);color:var(--green)}
-.tag.no{background:color-mix(in srgb,var(--red) 14%,transparent);color:var(--red)}
-.tag.wait{background:color-mix(in srgb,var(--amber) 20%,transparent);color:#a06d00}
-@media (prefers-color-scheme: dark){.tag.wait{color:var(--amber)}}
-.pending{color:#a06d00;font-weight:700}
-.nw{white-space:nowrap}
-@media (prefers-color-scheme: dark){.pending{color:var(--amber)}}
-.chips{display:flex;flex-wrap:wrap;gap:6px;padding:4px 14px 12px}
-.chip{font-size:14px;font-weight:700;border-radius:8px;padding:3px 9px;border:1px solid var(--line);color:var(--muted);background:var(--bg)}
-.chip.done{background:color-mix(in srgb,var(--green) 16%,transparent);border-color:color-mix(in srgb,var(--green) 45%,transparent);color:var(--ink)}
-.note{font-size:15px;color:var(--ink2);background:var(--panel);border-radius:12px;padding:12px 14px}
-.note p{margin:0 0 6px}.note p:last-child{margin:0}
-footer{font-size:14px;color:var(--muted);margin-top:26px;border-top:1px solid var(--line);padding-top:12px}
-.demo{background:var(--amber);color:#000;font-weight:800;border-radius:8px;padding:6px 12px;margin-bottom:12px;display:inline-block}
+.eq{font-size:12.5px;color:var(--ink2)}
+.eq b{color:var(--ink)}
+.wait-line{font-size:12.5px;color:var(--wait);margin-top:3px;font-weight:600}
+
+.sec{font-size:13px;font-weight:700;color:var(--ink2);margin:0 0 6px;display:flex;justify-content:space-between;align-items:baseline}
+.sec small{font-weight:600;color:var(--muted)}
+.tiles{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+.tile{border-radius:11px;padding:7px 9px 7px;background:color-mix(in srgb,var(--c) 7%,#fff);border:1px solid color-mix(in srgb,var(--c) 22%,#fff);
+  display:flex;flex-direction:column;gap:2px;min-width:0}
+.t-lbl{font-size:12.5px;font-weight:600;color:var(--ink2);line-height:1.2}
+.t-val{font-size:18px;font-weight:800;color:var(--ink);line-height:1.15;font-variant-numeric:tabular-nums;white-space:nowrap}
+.t-val small{font-size:12px;color:var(--muted);font-weight:600}
+.t-val.pend{color:var(--wait);font-size:15px}
+.t-bar{height:4px;border-radius:2px;background:color-mix(in srgb,var(--c) 18%,#fff);overflow:hidden;margin-top:auto}
+.t-bar i{display:block;height:100%;background:var(--c)}
+.tag{font-size:11px;font-weight:700;line-height:1.3}
+.tag.ok{color:var(--ok)} .tag.no{color:var(--no)} .tag.wait{color:var(--wait)}
+
+.bonus{margin-top:10px;padding:10px 12px;border-color:color-mix(in srgb,var(--violet) 25%,#fff);background:color-mix(in srgb,var(--violet) 4%,#fff)}
+.b-row{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
+.b-name{font-weight:700;font-size:14px}
+.b-name small{font-weight:500;color:var(--muted);font-size:12px;margin-left:4px}
+.b-val{font-weight:800;white-space:nowrap;font-variant-numeric:tabular-nums}
+.b-val small{color:var(--muted);font-weight:600;font-size:12px}
+.b-val .plus{color:var(--violet)}
+.chips{display:grid;grid-template-columns:repeat(auto-fill,minmax(46px,1fr));gap:4px;margin:6px 0 7px}
+.chip{display:flex;flex-direction:column;align-items:center;border-radius:8px;padding:2px 2px 3px;white-space:nowrap;line-height:1.2;
+  border:1px solid var(--line);color:var(--muted);background:#fff}
+.chip b{font-size:12px}.chip small{font-size:10.5px;font-weight:600}
+.chip.done{background:color-mix(in srgb,var(--green) 12%,#fff);border-color:color-mix(in srgb,var(--green) 40%,#fff);color:#065f46}
+.chip.part{grid-column:span 2}
+.pend{color:var(--wait)}
 </style>
 </head>
 <body>
-<div class="stripe" aria-hidden="true"><i style="background:var(--blue)"></i><i style="background:var(--orange)"></i><i style="background:var(--green)"></i><i style="background:var(--amber)"></i><i style="background:var(--pink)"></i></div>
+<div class="strip" aria-hidden="true"></div>
 <main>
-  <p class="kicker">GE5072 / GE072 · ภาคเรียนที่ 1/2569</p>
-  <h1>เช็กคะแนน <span style="color:var(--ink2);font-weight:700">Score Check</span></h1>
-  <p class="lead">ใส่ <b>Code</b> ของตัวเอง (ที่อาจารย์ส่งให้ทาง Teams chat รูปแบบ S-XXXX) เพื่อดูคะแนนเก็บและคะแนน Bonus ของคุณ</p>
-
-  <form id="f" autocomplete="off">
-    <label class="field" for="code">
-      <input id="code" name="code" inputmode="text" autocapitalize="characters" spellcheck="false" maxlength="40" placeholder="S-XXXX" aria-label="Code ของคุณ เช่น S-XXXX">
-    </label>
-    <button id="go" type="submit">ดูคะแนน</button>
-  </form>
-  <p class="updated" id="updated" hidden></p>
-  <p class="hint">🔒 Code ใช้ถอดรหัสคะแนนในเครื่องของคุณเท่านั้น ไม่ได้ส่งไปที่ไหน · Code เป็นของคุณคนเดียว อย่าบอกต่อนะคะ</p>
-  <p class="msg" id="msg" role="status" aria-live="polite"></p>
-
-  <div id="result" aria-live="polite"></div>
-
-  <footer>
-    คะแนนไม่ตรงหรือมีข้อสงสัย ส่งข้อความหาอาจารย์ทาง Teams chat พร้อมบอกว่ารายการไหนค่ะ · ลืม Code ให้ค้นในแชตกับ Flow bot หรือทักอาจารย์
-  </footer>
+  <div class="layout" id="layout">
+    <div class="left">
+      <p class="kicker">GE5072 / GE072 · ภาคเรียนที่ 1/2569</p>
+      <h1>เช็คคะแนน <span>Score Check</span></h1>
+      <form id="f" autocomplete="off">
+        <input id="code" name="code" inputmode="text" autocapitalize="characters" spellcheck="false" maxlength="40"
+               placeholder="ใส่ Code เช่น S-XXXX" aria-label="Code ของคุณ เช่น S-XXXX">
+        <button id="go" type="submit">ดูคะแนน</button>
+      </form>
+      <div class="meta"><span class="upd" id="updated" hidden></span></div>
+      <p class="hint">🔒 ใช้ Code ที่ได้รับทาง Teams chat · ถอดรหัสคะแนนในเครื่องของคุณเท่านั้น · อย่าบอก Code ต่อนะคะ</p>
+      <p class="msg" id="msg" role="status" aria-live="polite"></p>
+      <div id="summary" aria-live="polite"></div>
+    </div>
+    <div class="right" id="detail"></div>
+  </div>
 </main>
 
 <script>
@@ -154,123 +161,122 @@ footer{font-size:14px;color:var(--muted);margin-top:26px;border-top:1px solid va
     return `${dd} ${TH_MONTHS[m - 1]} ${y + 543}${t ? " เวลา " + t + " น." : ""}`;
   }
 
-  // คะแนนเก็บ (อาจารย์ไทย) = 45, as announced in Teams on 26 Nov 2026
+  // คะแนนเก็บ (อาจารย์ไทย) = 45, as announced in Teams on 26 Nov 2026. Order = tile order (3 per row).
   const ITEMS = [
-    { k: "att",   name: "เข้าเรียน", en: "Attendance", max: 10, c: "var(--blue)" },
-    { k: "eval",  name: "ประเมินการเรียนการสอน", en: "Course Evaluation · บันทึกตอนปลายภาค", max: 2.5, c: "var(--blue)" },
-    { k: "a1",    name: "Assignment 1", en: "ส่งงาน = ได้ 2.5", max: 2.5, c: "var(--orange)", sub: true },
-    { k: "a2",    name: "Assignment 2", en: "ส่งงาน = ได้ 2.5", max: 2.5, c: "var(--orange)", sub: true },
-    { k: "a3",    name: "Assignment 3", en: "ส่งงาน = ได้ 2.5", max: 2.5, c: "var(--orange)", sub: true },
-    { k: "fp",    name: "Final Project", en: "Report & Presentation", max: 10, c: "var(--green)" },
-    { k: "quiz",  name: "Pop Quiz", en: "", max: 5, c: "var(--amber)" },
-    { k: "busuu", name: "Busuu", en: "", max: 10, c: "var(--pink)" },
+    { k: "att",   name: "เข้าเรียน", max: 10, c: "var(--blue)" },
+    { k: "eval",  name: "ประเมินการสอน", max: 2.5, c: "var(--cyan)" },
+    { k: "quiz",  name: "Pop Quiz", max: 5, c: "var(--amber)" },
+    { k: "a1",    name: "Assignment 1", max: 2.5, c: "var(--orange)", sub: true },
+    { k: "a2",    name: "Assignment 2", max: 2.5, c: "var(--orange)", sub: true },
+    { k: "a3",    name: "Assignment 3", max: 2.5, c: "var(--orange)", sub: true },
+    { k: "fp",    name: "Final Project", max: 10, c: "var(--green)" },
+    { k: "busuu", name: "Busuu", max: 10, c: "var(--pink)" },
   ];
   // Until the presentation marks are entered, the Final Projects column holds the report only (out of 8).
   const itemsFor = (data) => !data.fpSplit ? ITEMS : ITEMS.flatMap((it) => it.k !== "fp" ? [it] : [
-    { ...it, name: "Final Project · Report", en: "รายงาน (เต็ม 8) · ยังไม่รวม Presentation 2 คะแนน", max: 8 },
-    { k: "fpPres", name: "Final Project · Presentation", en: "การนำเสนอ 2 คะแนน ยังไม่รวมในคะแนนตอนนี้ · จะเพิ่มให้เร็ว ๆ นี้ค่ะ", max: 2, c: "var(--green)", pending: true,
-      tag: '<span class="tag wait">เร็ว ๆ นี้</span>' },
+    { ...it, name: "Report", max: 8 },
+    { k: "fpPres", name: "Presentation", max: 2, c: "var(--green)", soon: true },
   ]);
 
   function render(data, code, rec) {
     const pending = new Set(data.pending || []);
-    let base = 0, waiting = [];
-    const rows = itemsFor(data).map((it) => {
+    let base = 0;
+    const waiting = [];
+    const tiles = itemsFor(data).map((it) => {
       const v = rec[it.k];
-      let val, tag = "", pct = 0;
-      if (pending.has(it.k) || it.pending) {
-        val = `<span class="pending">รอบันทึก</span> <small>/ ${it.max}</small>`;
-        tag = it.tag || "";
+      let val, tag = "", pct = 0, pend = false;
+      if (it.soon) {
+        pend = true; val = `เร็ว ๆ นี้ <small>/ ${it.max}</small>`;
+        tag = '<span class="tag wait">ยังไม่รวม</span>';
+        waiting.push("Presentation");
+      } else if (pending.has(it.k)) {
+        pend = true; val = `รอบันทึก <small>/ ${it.max}</small>`;
         waiting.push(it.name);
       } else if (isNum(v)) {
         base += v; pct = v / it.max;
-        val = `${fmt(v)} <small>/ ${it.max}</small>`;
-        if (it.sub) tag = v > 0 ? '<span class="tag ok">ส่งแล้ว</span>' : '<span class="tag no">ไม่พบการส่ง</span>';
+        val = `${fmt(v)}<small> / ${it.max}</small>`;
+        if (it.sub && v <= 0) tag = '<span class="tag no">ไม่พบการส่ง</span>';
       } else if (typeof v === "string" && v) {
-        val = `<span class="pending">รอตรวจ</span> <small>/ ${it.max}</small>`;
+        pend = true; val = `รอตรวจ <small>/ ${it.max}</small>`;
         tag = '<span class="tag wait">ส่งแล้ว</span>';
         waiting.push(it.name);
       } else {
-        val = `0 <small>/ ${it.max}</small>`;
-        tag = it.sub ? '<span class="tag no">ไม่พบการส่ง</span>' : (it.k === "fp" ? '<span class="tag no">ยังไม่มีคะแนน</span>' : "");
+        val = `0<small> / ${it.max}</small>`;
+        if (it.sub) tag = '<span class="tag no">ไม่พบการส่ง</span>';
+        else if (it.k === "fp") tag = '<span class="tag no">ยังไม่มีคะแนน</span>';
       }
-      return `<div class="row" style="--c:${it.c}">
-        <div class="name">${esc(it.name)}${tag}${it.en ? `<small>${esc(it.en)}</small>` : ""}</div>
-        <div class="val">${val}</div>
-        <div class="mini"><i style="width:${Math.min(100, pct * 100).toFixed(1)}%"></i></div></div>`;
+      return `<div class="tile" style="--c:${it.c}">
+        <div class="t-lbl">${esc(it.name)}</div>
+        <div class="t-val${pend ? " pend" : ""}">${val}</div>${tag}
+        <div class="t-bar"><i style="width:${Math.min(100, pct * 100).toFixed(1)}%"></i></div></div>`;
     }).join("");
     base = r2(base);
 
-    // Bonus
-    const exMax = data.exercises, A_TOTAL = data.partATotal;
+    const A_TOTAL = data.partATotal;
     let aPct = null, aRaw = rec.partA;
-    if (pending.has("partA")) { waiting.push("Bonus Part A"); }
+    if (pending.has("partA")) waiting.push("Part A");
     else { aRaw = isNum(aRaw) ? aRaw : 0; aPct = r2(aRaw / A_TOTAL * 2.5); }
     let bPct = null, bRaw = rec.partB;
-    if (pending.has("partB")) { waiting.push("Bonus Part B"); }
+    if (pending.has("partB")) waiting.push("Part B");
     else { bRaw = isNum(bRaw) ? bRaw : 0; bPct = r2(bRaw / 10); }
 
-    const chips = Object.entries(exMax).map(([ex, mx]) => {
+    const chips = Object.entries(data.exercises).map(([ex, mx]) => {
+      const wk = data.weeks && data.weeks[ex];
+      const w = wk ? `<small>Wk ${wk}</small>` : "";
       const got = rec.ex && rec.ex[ex];
-      return got ? `<span class="chip done">${ex} ✓ ${got}${mx !== 5 || got !== mx ? "/" + mx : ""}</span>` : `<span class="chip">${ex} –</span>`;
+      if (!got) return `<span class="chip" title="${ex}${wk ? " (Wk " + wk + ")" : ""} · ยังไม่ได้ส่ง"><b>${ex}</b>${w}</span>`;
+      const part = got !== mx;
+      return `<span class="chip done${part ? " part" : ""}" title="${ex}${wk ? " (Wk " + wk + ")" : ""} · ได้ ${got}/${mx}"><b>${ex}${part ? ` · ${got}/${mx}` : ""}</b>${w}</span>`;
     }).join("");
 
     const raw = r2(base + (aPct || 0) + (bPct || 0));
     const counted = Math.min(45, raw);
+    const fromBonus = Math.max(0, counted - Math.min(base, 45));
     const seg = (x, col) => `<i style="width:${(Math.max(0, x) / 45 * 100).toFixed(2)}%;background:${col}"></i>`;
-    const fromBonus = Math.max(0, counted - base);
+    const pv = (p) => p === null ? '<span class="pend">รอ</span>' : `<b>${fmt(p)}</b>`;
 
-    const waitLine = waiting.length
-      ? `<div class="eq">⏳ ยังรอคะแนน: ${waiting.map(esc).join(", ")} — ตัวเลขนี้จะเปลี่ยนเมื่อบันทึกครบ</div>` : "";
+    $("#summary").innerHTML = `
+      <div class="card sum">
+        <div class="sum-top"><div class="who">${esc(code)} <small>· Section ${esc(rec.g)}</small></div>
+          ${rec.demo ? '<span class="demo">ตัวอย่าง · ไม่ใช่คะแนนจริง</span>' : `<span class="stamp">อัปเดต ${esc(thaiDate(data.updated))}</span>`}</div>
+        <div class="bigrow"><div class="big">${fmt(counted)} <small>/ 45</small></div>
+          <div class="lbl">คะแนนเก็บ อาจารย์ไทย<br>รวม Bonus แล้ว</div></div>
+        <div class="bar">${seg(Math.min(base, 45), "var(--blue)")}${seg(fromBonus, "var(--violet)")}</div>
+        <div class="eq">${fmt(base)} + Part A ${pv(aPct)} + Part B ${pv(bPct)} = <b>${fmt(raw)}</b>${raw > 45 ? " → นับเต็ม 45" : " (สูงสุด 45)"}</div>
+        ${waiting.length ? `<div class="wait-line">⏳ รอคะแนน: ${waiting.map(esc).join(" · ")}</div>` : ""}
+      </div>`;
 
-    $("#result").innerHTML = `
-      ${rec.demo ? '<div class="demo">ตัวอย่าง (Code ทดสอบ) — ไม่ใช่คะแนนจริงของใคร</div>' : ""}
-      <div class="head">
-        <div class="who">${esc(code)} <small>· Section ${esc(rec.g)}</small></div>
-        <div class="stamp">อัปเดตล่าสุด ${esc(thaiDate(data.updated))}</div>
-      </div>
+    $("#detail").innerHTML = `
+      <div class="sec">คะแนนเก็บ <small>เต็ม 45</small></div>
+      <div class="tiles">${tiles}</div>
+      <div class="card bonus">
+        <div class="b-row"><div class="b-name" title="คะแนนที่ได้ ÷ ${A_TOTAL} × 2.5">Bonus Part A<small>แบบฝึกหัดเพิ่มเติม</small></div>
+          <div class="b-val">${aPct === null ? '<span class="pend">รอบันทึก</span>' : `${fmt(aRaw)}<small> / ${A_TOTAL}</small> → <span class="plus">+${fmt(aPct)}</span>`}</div></div>
+        <div class="chips">${chips}</div>
+        <div class="b-row"><div class="b-name" title="คะแนนที่ได้ ÷ 10">Bonus Part B<small>AI Projects</small></div>
+          <div class="b-val">${bPct === null ? '<span class="pend">รอบันทึก</span>' : `${fmt(bRaw)}<small> / 75</small> → <span class="plus">+${fmt(bPct)}</span>`}</div></div>
+      </div>`;
+    $("#layout").classList.add("has-result");
+  }
 
-      <div class="hero">
-        <div class="lbl">คะแนนเก็บ อาจารย์ไทย (รวม Bonus แล้ว)</div>
-        <div class="big">${fmt(counted)} <small>/ 45</small></div>
-        <div class="bar">${seg(Math.min(base, 45), "var(--blue)")}${seg(fromBonus, "var(--green)")}</div>
-        <div class="eq">คะแนนเก็บ ${fmt(base)} + Bonus Part A ${aPct === null ? '<span class="nw">รอบันทึก</span>' : fmt(aPct)} + Part B ${bPct === null ? '<span class="nw">รอบันทึก</span>' : fmt(bPct)}
-          = ${fmt(raw)}${raw > 45 ? " → นับให้เต็ม 45" : ""} <span style="white-space:nowrap">(นับได้สูงสุด 45)</span></div>
-        ${waitLine}
-      </div>
-
-      <section>
-        <h2><span class="n">1</span>คะแนนเก็บ (เต็ม 45)</h2>
-        <div class="list">${rows}
-          <div class="row sum"><div class="name">รวมคะแนนเก็บ (ยังไม่รวม Bonus)</div><div class="val">${fmt(base)} <small>/ 45</small></div></div>
-        </div>
-      </section>
-
-      <section>
-        <h2><span class="n">2</span>คะแนน Bonus</h2>
-        <div class="list">
-          <div class="row"><div class="name">Part A · แบบฝึกหัดเพิ่มเติม<small>Ex 1–11 · เต็ม ${A_TOTAL} คะแนน (Ex 3 = 15 · ชิ้นอื่นชิ้นละ 5) · ÷ ${A_TOTAL} × 2.5</small></div>
-            <div class="val">${aPct === null ? '<span class="pending">รอบันทึก</span>' : `${fmt(aRaw)} <small>/ ${A_TOTAL}</small> → ${fmt(aPct)}`}</div></div>
-          <div class="chips">${chips}</div>
-          <div class="row"><div class="name">Part B · AI-Integrated Projects<small>3 ชิ้น ชิ้นละ 25 · เต็ม 75 คะแนน · ÷ 10</small></div>
-            <div class="val">${bPct === null ? '<span class="pending">รอบันทึก</span>' : `${fmt(bRaw)} <small>/ 75</small> → ${fmt(bPct)}`}</div></div>
-        </div>
-      </section>`;
-    $("#result").scrollIntoView({ behavior: "smooth", block: "start" });
+  function clearResult() {
+    $("#summary").innerHTML = ""; $("#detail").innerHTML = "";
+    $("#layout").classList.remove("has-result");
   }
 
   $("#f").addEventListener("submit", async (e) => {
     e.preventDefault();
     const n = normalise($("#code").value);
-    if (n.err) { msg(n.err); $("#result").innerHTML = ""; return; }
+    if (n.err) { msg(n.err); clearResult(); return; }
     $("#code").value = n.code;
     if (!(window.crypto && crypto.subtle)) { msg("เบราว์เซอร์นี้เปิดคะแนนไม่ได้ ลองเปิดลิงก์ใน Chrome หรือ Safari ค่ะ"); return; }
     msg("กำลังเปิดคะแนน…"); $("#go").disabled = true;
     try {
       const data = await loadData();
       const rec = await openRecord(data, n.code);
-      if (!rec) { msg(`ไม่พบ ${n.code} ค่ะ ลองตรวจ Code อีกครั้ง ถ้ายังไม่เจอ ทักอาจารย์ทาง Teams chat`); $("#result").innerHTML = ""; return; }
+      if (!rec) { msg(`ไม่พบ ${n.code} ค่ะ ลองตรวจ Code อีกครั้ง ถ้ายังไม่เจอ ทักอาจารย์ทาง Teams chat`); clearResult(); return; }
       msg(""); render(data, n.code, rec);
+      $("#code").blur();
     } catch (err) {
       console.error(err);
       msg("โหลดข้อมูลไม่สำเร็จ ลองรีเฟรชหน้าแล้วกดอีกครั้งค่ะ");

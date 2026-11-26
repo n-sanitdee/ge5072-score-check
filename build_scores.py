@@ -59,6 +59,10 @@ FP_PRESENTATION_PENDING = True
 # Part A catalogue as announced in Teams on 26 Nov 2026: 65 points in all.
 EXERCISES = {f"Ex {i}": (15 if i == 3 else 5) for i in range(1, 12)}
 PART_A_TOTAL = 65
+# Teams week channel each exercise was posted in (same table as EXERCISE_WEEKS in
+# ge5072_pseudonymise.py, which labels the student view "Ex 1 (Wk 2)").
+EXERCISE_WEEKS = {"Ex 1": 2, "Ex 2": 2, "Ex 3": 3, "Ex 4": 4, "Ex 5": 5, "Ex 6": 5,
+                  "Ex 7": 6, "Ex 8": 7, "Ex 9": 9, "Ex 10": 10, "Ex 11": 11}
 
 # Demo row so the teacher can try the live page without a student's code.
 DEMO_CODE = "S-TEST"
@@ -119,6 +123,7 @@ def main():
     if missing:
         sys.exit(f"Extract is missing column(s): {missing}")
     extra_ex = [c for c in header if c.startswith("Ex ") and c not in EXERCISES]
+    assert set(EXERCISE_WEEKS) == set(EXERCISES), "EXERCISE_WEEKS must list every exercise"
     if extra_ex:
         sys.exit(f"New exercise column(s) {extra_ex}: update EXERCISES / PART_A_TOTAL "
                  "(and the 26 Nov post, which says 65) before rebuilding.")
@@ -149,7 +154,7 @@ def main():
     # Every build uses a fresh salt, so the file always changes. Skip the rebuild
     # when the scores themselves are unchanged (hash kept locally, not published).
     updated = dt.datetime.fromtimestamp(master_mtime).strftime("%Y-%m-%dT%H:%M")
-    digest = hashlib.sha256(json.dumps([records, pending, FP_PRESENTATION_PENDING, updated], sort_keys=True).encode()).hexdigest()
+    digest = hashlib.sha256(json.dumps([records, pending, FP_PRESENTATION_PENDING, updated, EXERCISE_WEEKS], sort_keys=True).encode()).hexdigest()
     stamp = HERE / ".last_data_hash"
     if OUT.exists() and stamp.exists() and stamp.read_text().strip() == digest:
         print("Scores unchanged since the last build; nothing to do.")
@@ -165,7 +170,7 @@ def main():
 
     doc = {"v": 1, "updated": updated, "iter": ITERATIONS,
            "salt": base64.b64encode(salt).decode(), "pending": pending, "fpSplit": FP_PRESENTATION_PENDING,
-           "exercises": EXERCISES, "partATotal": PART_A_TOTAL,
+           "exercises": EXERCISES, "weeks": EXERCISE_WEEKS, "partATotal": PART_A_TOTAL,
            "records": dict(sorted(out.items()))}
     OUT.write_text(json.dumps(doc, separators=(",", ":")) + "\n")
     stamp.write_text(digest + "\n")
