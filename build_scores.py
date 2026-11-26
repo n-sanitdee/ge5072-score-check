@@ -9,9 +9,9 @@ readable scores: the page can open a row only when someone types its code.
     python3 build_scores.py           # rebuild scores.enc.json
     python3 build_scores.py --push    # rebuild, commit, push (Pages redeploys)
 
-Regenerate the extract first if the master changed:
-    cd ~/Library/CloudStorage/OneDrive-UniversityoftheThaiChamberofCommerce/Pseudonymisation
-    /opt/homebrew/bin/python3.11 ge5072_pseudonymise.py --if-changed
+It first runs ge5072_pseudonymise.py --if-changed (which pulls the current score file
+from OneDrive and regenerates the extract if it changed). The page's "อัปเดตล่าสุด" time is
+the score file's last save.
 """
 import argparse
 import base64
@@ -30,6 +30,8 @@ from cryptography.hazmat.primitives.ciphers.aead import AESGCM
 ONEDRIVE = Path.home() / "Library/CloudStorage/OneDrive-UniversityoftheThaiChamberofCommerce"
 SRC = ONEDRIVE / "Pseudonymisation/shareable/GE5072_Scores_Analysis.csv"
 MASTER = ONEDRIVE / "GE5072 (Aj.Mew) Scores.xlsx"
+PSEUDO = ONEDRIVE / "Pseudonymisation"
+GEN_PY = "/opt/homebrew/bin/python3.11"
 HERE = Path(__file__).resolve().parent
 OUT = HERE / "scores.enc.json"
 
@@ -85,14 +87,30 @@ def derive(code, salt):
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--push", action="store_true", help="commit and push after building")
+    ap.add_argument("--no-regen", action="store_true",
+                    help="use the extract as it is (skip ge5072_pseudonymise.py --if-changed)")
     args = ap.parse_args()
 
+    if not MASTER.exists():
+        sys.exit(f"Missing {MASTER}")
+    # The local master is an OneDrive placeholder: until something reads it, it keeps an
+    # old size and date. Reading it pulls the current cloud copy, so its modified time is
+    # then the score file's real last save, which is what the page shows as "updated".
+    with MASTER.open("rb") as f:
+        while f.read(1 << 20):
+            pass
+    master_mtime = MASTER.stat().st_mtime
+    if not args.no_regen:
+        r = subprocess.run([GEN_PY, "ge5072_pseudonymise.py", "--if-changed"], cwd=PSEUDO,
+                           capture_output=True, text=True)
+        if r.returncode != 0:
+            sys.exit("ge5072_pseudonymise.py failed:\n" + r.stdout[-2000:] + r.stderr[-2000:])
+        if MASTER.stat().st_mtime != master_mtime:
+            sys.exit("The score file changed while building; run again.")
     if not SRC.exists():
         sys.exit(f"Missing {SRC}")
-    src_mtime = SRC.stat().st_mtime
-    if MASTER.exists() and MASTER.stat().st_mtime > src_mtime + 120:
-        print("WARNING: the master Scores.xlsx is newer than the extract. "
-              "Run ge5072_pseudonymise.py first, or the page shows old scores.")
+    if args.no_regen and master_mtime > SRC.stat().st_mtime + 120:
+        print("WARNING: the score file is newer than the extract; the page may show old scores.")
 
     with SRC.open(encoding="utf-8-sig") as f:
         rows = list(csv.DictReader(f))
@@ -130,7 +148,8 @@ def main():
 
     # Every build uses a fresh salt, so the file always changes. Skip the rebuild
     # when the scores themselves are unchanged (hash kept locally, not published).
-    digest = hashlib.sha256(json.dumps([records, pending, FP_PRESENTATION_PENDING], sort_keys=True).encode()).hexdigest()
+    updated = dt.datetime.fromtimestamp(master_mtime).strftime("%Y-%m-%dT%H:%M")
+    digest = hashlib.sha256(json.dumps([records, pending, FP_PRESENTATION_PENDING, updated], sort_keys=True).encode()).hexdigest()
     stamp = HERE / ".last_data_hash"
     if OUT.exists() and stamp.exists() and stamp.read_text().strip() == digest:
         print("Scores unchanged since the last build; nothing to do.")
@@ -144,7 +163,6 @@ def main():
         ct = AESGCM(key).encrypt(iv, json.dumps(rec, ensure_ascii=False, separators=(",", ":")).encode(), None)
         out[rid] = [base64.b64encode(iv).decode(), base64.b64encode(ct).decode()]
 
-    updated = dt.datetime.fromtimestamp(src_mtime).strftime("%Y-%m-%dT%H:%M")
     doc = {"v": 1, "updated": updated, "iter": ITERATIONS,
            "salt": base64.b64encode(salt).decode(), "pending": pending, "fpSplit": FP_PRESENTATION_PENDING,
            "exercises": EXERCISES, "partATotal": PART_A_TOTAL,

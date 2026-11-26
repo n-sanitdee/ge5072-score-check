@@ -15,18 +15,15 @@ Bonus Part A/B, and the topped-up total (max 45), using the method announced in 
 
 ## Updating the scores
 
-1. Make sure the pseudonymised extract is current (regenerate after editing the master):
+    cd ~/ge5072-score-check
+    /opt/homebrew/bin/python3.11 build_scores.py --push
 
-       cd ~/Library/CloudStorage/OneDrive-UniversityoftheThaiChamberofCommerce/Pseudonymisation
-       /opt/homebrew/bin/python3.11 ge5072_pseudonymise.py --if-changed
-
-2. Rebuild and publish:
-
-       cd ~/ge5072-score-check
-       /opt/homebrew/bin/python3.11 build_scores.py --push
-
-   GitHub Pages redeploys in about a minute. The build refuses to run if a new exercise column
-   (Ex 12+) appears, because the Part A total (65) and the 26 Nov post would then be out of date.
+The build first reads the score file (`GE5072 (Aj.Mew) Scores.xlsx`), which makes OneDrive bring
+down the current version, then runs `ge5072_pseudonymise.py --if-changed` to refresh the extract.
+The page's "อัปเดตล่าสุด" time is the score file's last save. If the Mac's copy looks stuck on an
+old save (compare with the file's version history in OneDrive), restart OneDrive and build again.
+GitHub Pages redeploys in about a minute. The build refuses to run if a new exercise column
+(Ex 12+) appears, because the Part A total (65) and the 26 Nov post would then be out of date.
 
 A column that nobody has a non-zero mark in yet (Course Evaluation, Part B, today) shows as
 "รอบันทึก" instead of 0, and is left out of the total until it is entered.
@@ -35,6 +32,3 @@ Final Project: while `FP_PRESENTATION_PENDING = True` in `build_scores.py`, the 
 Final Projects column as Report /8 plus Presentation "รอบันทึก" /2. Once the presentation points are
 in the tracker (column holds the full /10), set it to False and rebuild; the build stops with a
 reminder if it sees a mark above 8 while the flag is still True.
-
-The "อัปเดตล่าสุด" time on the page is when the pseudonymised extract was last regenerated with
-changed scores.
