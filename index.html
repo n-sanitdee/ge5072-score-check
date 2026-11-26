@@ -1,0 +1,284 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>GE5072 Score Check</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#0b0b0b; --ink2:#52514e; --muted:#8a8984; --line:#e6e5e0; --bg:#ffffff; --panel:#f7f7f4; --card:#ffffff;
+  --blue:#2a78d6; --orange:#eb6834; --green:#1baf7a; --amber:#eda100; --pink:#e87ba4; --red:#d64545;
+  --track:#ecebe6;
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --ink:#f2f1ec; --ink2:#c2c0b8; --muted:#8f8d86; --line:#34332f; --bg:#151514; --panel:#1f1f1d; --card:#262624;
+    --track:#3a3935;
+  }
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--ink)}
+body{font-family:Sarabun,Thonburi,"Leelawadee UI",sans-serif;font-size:17px;line-height:1.5;-webkit-text-size-adjust:100%}
+.stripe{display:flex;height:8px}.stripe i{flex:1}
+main{max-width:640px;margin:0 auto;padding:22px 16px 40px}
+.kicker{font-size:15px;color:var(--ink2);margin:0}
+h1{font-size:30px;font-weight:800;line-height:1.2;margin:2px 0 8px}
+.lead{color:var(--ink2);margin:0 0 18px}
+form{display:flex;gap:8px;flex-wrap:wrap}
+.field{display:flex;align-items:stretch;flex:1 1 220px;border:2px solid var(--ink);border-radius:12px;overflow:hidden;background:var(--card)}
+.field span{display:flex;align-items:center;padding:0 4px 0 14px;font-size:22px;font-weight:800;color:var(--ink2)}
+.field input{flex:1;min-width:0;border:0;outline:0;background:transparent;color:var(--ink);font:inherit;font-size:22px;font-weight:800;letter-spacing:.12em;padding:10px 12px 10px 2px;text-transform:uppercase}
+.field:focus-within{box-shadow:0 0 0 3px color-mix(in srgb,var(--blue) 35%,transparent)}
+button{font:inherit;font-weight:700;font-size:18px;border:0;border-radius:12px;padding:12px 22px;background:var(--ink);color:var(--bg);cursor:pointer}
+button:disabled{opacity:.55;cursor:wait}
+.hint{font-size:14px;color:var(--muted);margin:10px 0 0}
+.msg{margin:16px 0 0;padding:12px 14px;border-radius:10px;background:var(--panel);border-left:5px solid var(--orange)}
+.msg:empty{display:none}
+#result{margin-top:22px}
+.head{display:flex;justify-content:space-between;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:12px}
+.who{font-size:20px;font-weight:800}
+.who small{font-weight:600;color:var(--ink2);font-size:16px}
+.stamp{font-size:14px;color:var(--muted)}
+.hero{background:var(--panel);border-radius:14px;padding:16px 16px 14px;border-top:6px solid var(--blue);margin-bottom:18px}
+.hero .lbl{font-size:16px;font-weight:700;color:var(--ink2)}
+.hero .big{font-size:44px;font-weight:800;line-height:1.1;margin:4px 0 8px}
+.hero .big small{font-size:22px;color:var(--ink2);font-weight:700}
+.hero .eq{font-size:15px;color:var(--ink2);margin-top:8px}
+.bar{height:12px;border-radius:6px;background:var(--track);overflow:hidden;display:flex}
+.bar i{display:block;height:100%}
+section{margin-bottom:20px}
+h2{font-size:20px;font-weight:800;margin:0 0 8px;display:flex;align-items:center;gap:10px}
+h2 .n{display:inline-flex;width:28px;height:28px;border-radius:50%;background:var(--ink);color:var(--bg);font-size:15px;align-items:center;justify-content:center;flex:none}
+.list{background:var(--card);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.row{display:grid;grid-template-columns:1fr auto;gap:2px 12px;padding:10px 14px;border-bottom:1px solid var(--line);align-items:center}
+.row:last-child{border-bottom:0}
+.row .name{font-weight:600}
+.row .name small{display:block;font-weight:400;color:var(--muted);font-size:14px;line-height:1.3}
+.row .val{font-weight:800;white-space:nowrap;text-align:right}
+.row .val small{color:var(--muted);font-weight:600}
+.row .mini{grid-column:1 / -1;height:6px;border-radius:3px;background:var(--track);overflow:hidden}
+.row .mini i{display:block;height:100%;background:var(--c,var(--blue))}
+.row.sum{background:var(--panel)}
+.row.sum .name{font-weight:800}
+.tag{display:inline-block;font-size:13px;font-weight:700;border-radius:999px;padding:1px 9px;margin-left:6px;vertical-align:1px}
+.tag.ok{background:color-mix(in srgb,var(--green) 18%,transparent);color:var(--green)}
+.tag.no{background:color-mix(in srgb,var(--red) 14%,transparent);color:var(--red)}
+.tag.wait{background:color-mix(in srgb,var(--amber) 20%,transparent);color:#a06d00}
+@media (prefers-color-scheme: dark){.tag.wait{color:var(--amber)}}
+.pending{color:#a06d00;font-weight:700}
+.nw{white-space:nowrap}
+@media (prefers-color-scheme: dark){.pending{color:var(--amber)}}
+.chips{display:flex;flex-wrap:wrap;gap:6px;padding:4px 14px 12px}
+.chip{font-size:14px;font-weight:700;border-radius:8px;padding:3px 9px;border:1px solid var(--line);color:var(--muted);background:var(--bg)}
+.chip.done{background:color-mix(in srgb,var(--green) 16%,transparent);border-color:color-mix(in srgb,var(--green) 45%,transparent);color:var(--ink)}
+.note{font-size:15px;color:var(--ink2);background:var(--panel);border-radius:12px;padding:12px 14px}
+.note p{margin:0 0 6px}.note p:last-child{margin:0}
+footer{font-size:14px;color:var(--muted);margin-top:26px;border-top:1px solid var(--line);padding-top:12px}
+.demo{background:var(--amber);color:#000;font-weight:800;border-radius:8px;padding:6px 12px;margin-bottom:12px;display:inline-block}
+</style>
+</head>
+<body>
+<div class="stripe" aria-hidden="true"><i style="background:var(--blue)"></i><i style="background:var(--orange)"></i><i style="background:var(--green)"></i><i style="background:var(--amber)"></i><i style="background:var(--pink)"></i></div>
+<main>
+  <p class="kicker">GE5072 / GE072 · ภาคเรียนที่ 1/2569</p>
+  <h1>เช็กคะแนน <span style="color:var(--ink2);font-weight:700">Score Check</span></h1>
+  <p class="lead">ใส่ <b>Code</b> ของตัวเอง (ที่อาจารย์ส่งให้ทาง Teams chat รูปแบบ S-XXXX) เพื่อดูคะแนนเก็บและคะแนน Bonus ของคุณ</p>
+
+  <form id="f" autocomplete="off">
+    <label class="field" for="code">
+      <span aria-hidden="true">S-</span>
+      <input id="code" name="code" inputmode="text" autocapitalize="characters" spellcheck="false" maxlength="8" placeholder="XXXX" aria-label="Code ของคุณ (4 ตัวหลัง S-)">
+    </label>
+    <button id="go" type="submit">ดูคะแนน</button>
+  </form>
+  <p class="hint">🔒 Code ใช้ถอดรหัสคะแนนในเครื่องของคุณเท่านั้น ไม่ได้ส่งไปที่ไหน · Code เป็นของคุณคนเดียว อย่าบอกต่อนะคะ</p>
+  <p class="msg" id="msg" role="status" aria-live="polite"></p>
+
+  <div id="result" aria-live="polite"></div>
+
+  <footer>
+    คะแนนไม่ตรงหรือมีข้อสงสัย ส่งข้อความหาอาจารย์ทาง Teams chat พร้อมบอกว่ารายการไหนค่ะ · ลืม Code ให้ค้นในแชตกับ Flow bot หรือทักอาจารย์
+  </footer>
+</main>
+
+<script>
+(() => {
+  const ALPHABET = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+  const $ = (s) => document.querySelector(s);
+  const msg = (t) => { $("#msg").textContent = t || ""; };
+  let dataPromise = null;
+
+  const loadData = () => dataPromise ||= fetch("scores.enc.json?" + Date.now(), { cache: "no-store" })
+    .then((r) => { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
+    .catch((e) => { dataPromise = null; throw e; });
+
+  const b64 = (s) => Uint8Array.from(atob(s), (c) => c.charCodeAt(0));
+  const hex = (buf) => [...new Uint8Array(buf)].map((b) => b.toString(16).padStart(2, "0")).join("");
+
+  function normalise(raw) {
+    let s = (raw || "").toUpperCase().replace(/[\s\-–_.]/g, "");
+    if (s.length === 5 && s[0] === "S") s = s.slice(1);
+    if (s.length !== 4) return { err: "Code มี 4 ตัวหลัง S- เช่น S-XXXX ลองตรวจอีกครั้งนะคะ" };
+    if (/[O0I1]/.test(s)) return { err: "Code ไม่มีตัว O, 0, I หรือ 1 ค่ะ ลองเทียบกับข้อความที่ได้รับอีกครั้ง" };
+    if ([...s].some((c) => !ALPHABET.includes(c))) return { err: "Code มีได้เฉพาะตัวอักษรภาษาอังกฤษและตัวเลข 2–9 ค่ะ" };
+    return { code: "S-" + s };
+  }
+
+  async function openRecord(data, code) {
+    const bits = await crypto.subtle.deriveBits(
+      { name: "PBKDF2", hash: "SHA-256", salt: b64(data.salt), iterations: data.iter },
+      await crypto.subtle.importKey("raw", new TextEncoder().encode(code), "PBKDF2", false, ["deriveBits"]),
+      384);
+    const id = hex(bits.slice(32));
+    const hit = data.records[id];
+    if (!hit) return null;
+    const key = await crypto.subtle.importKey("raw", bits.slice(0, 32), "AES-GCM", false, ["decrypt"]);
+    const pt = await crypto.subtle.decrypt({ name: "AES-GCM", iv: b64(hit[0]) }, key, b64(hit[1]));
+    return JSON.parse(new TextDecoder().decode(pt));
+  }
+
+  const r2 = (x) => Math.round((x + Number.EPSILON) * 100) / 100;
+  const fmt = (x) => (Math.round(x * 100) / 100).toLocaleString("en-US", { maximumFractionDigits: 2 });
+  const isNum = (v) => typeof v === "number";
+  const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+  const TH_MONTHS = ["ม.ค.", "ก.พ.", "มี.ค.", "เม.ย.", "พ.ค.", "มิ.ย.", "ก.ค.", "ส.ค.", "ก.ย.", "ต.ค.", "พ.ย.", "ธ.ค."];
+  function thaiDate(iso) {
+    const [d, t] = iso.split("T"); const [y, m, dd] = d.split("-").map(Number);
+    return `${dd} ${TH_MONTHS[m - 1]} ${y + 543}${t ? " เวลา " + t + " น." : ""}`;
+  }
+
+  // คะแนนเก็บ (อาจารย์ไทย) = 45, as announced in Teams on 26 Nov 2026
+  const ITEMS = [
+    { k: "att",   name: "เข้าเรียน", en: "Attendance", max: 10, c: "var(--blue)" },
+    { k: "eval",  name: "ประเมินการเรียนการสอน", en: "Course Evaluation · บันทึกตอนปลายภาค", max: 2.5, c: "var(--blue)" },
+    { k: "a1",    name: "Assignment 1", en: "ส่งงาน = ได้ 2.5", max: 2.5, c: "var(--orange)", sub: true },
+    { k: "a2",    name: "Assignment 2", en: "ส่งงาน = ได้ 2.5", max: 2.5, c: "var(--orange)", sub: true },
+    { k: "a3",    name: "Assignment 3", en: "ส่งงาน = ได้ 2.5", max: 2.5, c: "var(--orange)", sub: true },
+    { k: "fp",    name: "Final Project", en: "Report & Presentation", max: 10, c: "var(--green)" },
+    { k: "quiz",  name: "Pop Quiz", en: "", max: 5, c: "var(--amber)" },
+    { k: "busuu", name: "Busuu", en: "", max: 10, c: "var(--pink)" },
+  ];
+
+  function render(data, code, rec) {
+    const pending = new Set(data.pending || []);
+    let base = 0, waiting = [];
+    const rows = ITEMS.map((it) => {
+      const v = rec[it.k];
+      let val, tag = "", pct = 0;
+      if (pending.has(it.k)) {
+        val = `<span class="pending">รอบันทึก</span> <small>/ ${it.max}</small>`;
+        waiting.push(it.name);
+      } else if (isNum(v)) {
+        base += v; pct = v / it.max;
+        val = `${fmt(v)} <small>/ ${it.max}</small>`;
+        if (it.sub) tag = v > 0 ? '<span class="tag ok">ส่งแล้ว</span>' : '<span class="tag no">ไม่พบการส่ง</span>';
+      } else if (typeof v === "string" && v) {
+        val = `<span class="pending">รอตรวจ</span> <small>/ ${it.max}</small>`;
+        tag = '<span class="tag wait">ส่งแล้ว</span>';
+        waiting.push(it.name);
+      } else {
+        val = `0 <small>/ ${it.max}</small>`;
+        tag = it.sub ? '<span class="tag no">ไม่พบการส่ง</span>' : (it.k === "fp" ? '<span class="tag no">ยังไม่มีคะแนน</span>' : "");
+      }
+      return `<div class="row" style="--c:${it.c}">
+        <div class="name">${esc(it.name)}${tag}${it.en ? `<small>${esc(it.en)}</small>` : ""}</div>
+        <div class="val">${val}</div>
+        <div class="mini"><i style="width:${Math.min(100, pct * 100).toFixed(1)}%"></i></div></div>`;
+    }).join("");
+    base = r2(base);
+
+    // Bonus
+    const exMax = data.exercises, A_TOTAL = data.partATotal;
+    let aPct = null, aRaw = rec.partA;
+    if (pending.has("partA")) { waiting.push("Bonus Part A"); }
+    else { aRaw = isNum(aRaw) ? aRaw : 0; aPct = r2(aRaw / A_TOTAL * 2.5); }
+    let bPct = null, bRaw = rec.partB;
+    if (pending.has("partB")) { waiting.push("Bonus Part B"); }
+    else { bRaw = isNum(bRaw) ? bRaw : 0; bPct = r2(bRaw / 10); }
+
+    const chips = Object.entries(exMax).map(([ex, mx]) => {
+      const got = rec.ex && rec.ex[ex];
+      return got ? `<span class="chip done">${ex} ✓ ${got}${mx !== 5 || got !== mx ? "/" + mx : ""}</span>` : `<span class="chip">${ex} –</span>`;
+    }).join("");
+
+    const raw = r2(base + (aPct || 0) + (bPct || 0));
+    const counted = Math.min(45, raw);
+    const seg = (x, col) => `<i style="width:${(Math.max(0, x) / 45 * 100).toFixed(2)}%;background:${col}"></i>`;
+    const fromBonus = Math.max(0, counted - base);
+
+    const waitLine = waiting.length
+      ? `<div class="eq">⏳ ยังรอคะแนน: ${waiting.map(esc).join(", ")} — ตัวเลขนี้จะเปลี่ยนเมื่อบันทึกครบ</div>` : "";
+
+    $("#result").innerHTML = `
+      ${rec.demo ? '<div class="demo">ตัวอย่าง (Code ทดสอบ) — ไม่ใช่คะแนนจริงของใคร</div>' : ""}
+      <div class="head">
+        <div class="who">${esc(code)} <small>· Section ${esc(rec.g)}</small></div>
+        <div class="stamp">คะแนน ณ ${esc(thaiDate(data.updated))}</div>
+      </div>
+
+      <div class="hero">
+        <div class="lbl">คะแนนเก็บ อาจารย์ไทย (รวม Bonus แล้ว)</div>
+        <div class="big">${fmt(counted)} <small>/ 45</small></div>
+        <div class="bar">${seg(Math.min(base, 45), "var(--blue)")}${seg(fromBonus, "var(--green)")}</div>
+        <div class="eq">คะแนนเก็บ ${fmt(base)} + Bonus Part A ${aPct === null ? '<span class="nw">รอบันทึก</span>' : fmt(aPct)} + Part B ${bPct === null ? '<span class="nw">รอบันทึก</span>' : fmt(bPct)}
+          = ${fmt(raw)}${raw > 45 ? " → นับให้เต็ม 45" : ""} <span style="white-space:nowrap">(นับได้สูงสุด 45)</span></div>
+        ${waitLine}
+      </div>
+
+      <section>
+        <h2><span class="n">1</span>คะแนนเก็บ (เต็ม 45)</h2>
+        <div class="list">${rows}
+          <div class="row sum"><div class="name">รวมคะแนนเก็บ (ยังไม่รวม Bonus)</div><div class="val">${fmt(base)} <small>/ 45</small></div></div>
+        </div>
+      </section>
+
+      <section>
+        <h2><span class="n">2</span>คะแนน Bonus</h2>
+        <div class="list">
+          <div class="row"><div class="name">Part A · แบบฝึกหัดเพิ่มเติม<small>Ex 1–11 · เต็ม ${A_TOTAL} คะแนน (Ex 3 = 15 · ชิ้นอื่นชิ้นละ 5) · ÷ ${A_TOTAL} × 2.5</small></div>
+            <div class="val">${aPct === null ? '<span class="pending">รอบันทึก</span>' : `${fmt(aRaw)} <small>/ ${A_TOTAL}</small> → ${fmt(aPct)}`}</div></div>
+          <div class="chips">${chips}</div>
+          <div class="row"><div class="name">Part B · AI-Integrated Projects<small>3 ชิ้น ชิ้นละ 25 · เต็ม 75 คะแนน · ÷ 10</small></div>
+            <div class="val">${bPct === null ? '<span class="pending">รอบันทึก</span>' : `${fmt(bRaw)} <small>/ 75</small> → ${fmt(bPct)}`}</div></div>
+        </div>
+      </section>
+
+      <section>
+        <h2><span class="n">3</span>ส่วนที่ยังไม่อยู่ในหน้านี้</h2>
+        <div class="note">
+          <p>📝 <b>สอบปลายภาค 35%</b> · พุธ 2 ธ.ค. 2569</p>
+          <p>🌏 <b>อาจารย์ต่างชาติ 20%</b> · Class Participation + L&amp;S Test 1–2</p>
+          <p>🎓 เกรดตัดแบบ <b>อิงกลุ่ม</b> จากคะแนนรวมเต็ม 100</p>
+        </div>
+      </section>`;
+    $("#result").scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+
+  $("#f").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const n = normalise($("#code").value);
+    if (n.err) { msg(n.err); $("#result").innerHTML = ""; return; }
+    $("#code").value = n.code.slice(2);
+    if (!(window.crypto && crypto.subtle)) { msg("เบราว์เซอร์นี้เปิดคะแนนไม่ได้ ลองเปิดลิงก์ใน Chrome หรือ Safari ค่ะ"); return; }
+    msg("กำลังเปิดคะแนน…"); $("#go").disabled = true;
+    try {
+      const data = await loadData();
+      const rec = await openRecord(data, n.code);
+      if (!rec) { msg(`ไม่พบ ${n.code} ค่ะ ลองตรวจ Code อีกครั้ง ถ้ายังไม่เจอ ทักอาจารย์ทาง Teams chat`); $("#result").innerHTML = ""; return; }
+      msg(""); render(data, n.code, rec);
+    } catch (err) {
+      console.error(err);
+      msg("โหลดข้อมูลไม่สำเร็จ ลองรีเฟรชหน้าแล้วกดอีกครั้งค่ะ");
+    } finally { $("#go").disabled = false; }
+  });
+
+  // Test hook: GE5072Score.lookup("S-XXXX")
+  window.GE5072Score = { lookup: async (c) => { const d = await loadData(); return openRecord(d, normalise(c).code); }, normalise };
+})();
+</script>
+</body>
+</html>
